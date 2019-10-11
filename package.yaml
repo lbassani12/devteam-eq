@@ -1,0 +1,55 @@
+name:                devteam-eq
+version:             0.1.0.0
+#github:              "githubuser/devteam-eq"
+license:             BSD3
+author:              "Lucio Bassani"
+maintainer:          "luciobassani12@gmail.com"
+copyright:           "2019 Lucio Bassani"
+
+extra-source-files:
+- README.md
+- ChangeLog.md
+
+# Metadata used when publishing your package
+# synopsis:            Short description of your package
+# category:            Web
+
+# To avoid duplicated efforts in documentation and dealing with the
+# complications of embedding Haddock markup inside cabal files, it is
+# common to point users to the README.md file.
+description:         Please see the README on GitHub at <https://github.com/githubuser/devteam-eq#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- aeson
+- req
+- bytestring
+- text
+- mtl
+- unordered-containers
+- time
+
+library:
+  source-dirs: src
+
+executables:
+  devteam-eq-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - devteam-eq
+
+tests:
+  devteam-eq-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - devteam-eq
