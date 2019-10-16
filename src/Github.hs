@@ -1,55 +1,21 @@
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE RecordWildCards #-}
 
 module Github where
 
+-- LTS Imports
 import Control.Monad.IO.Class
 import Data.Aeson
-import Data.Aeson.Types
 import Network.HTTP.Req
-import Data.Text
+import Data.Text as DText
 import System.Environment
 import Control.Monad.Except
 import System.IO.Error
 import Data.Time.Calendar
-import GHC.Generics
+import Data.ByteString.Char8 as BS
 
-import TeamAffinity
-
-type RepoOwner = String
-type RepoId = String
-type User = String
-type Password = String
-
-data Issue = Issue { i_author :: Developer
-                     , number :: Int
-} deriving(Show, Generic)
-
-data PullRequest = PR { author :: Developer
-                      , reviewers :: [Developer]
-                      } deriving (Eq, Show)
-
-data Repository = Repo { r_owner :: RepoOwner
-                       , r_id :: RepoId
-                       , pullRequests :: [PullRequest]
-                       } deriving (Eq, Show)
-
-data DateRange = Range Day Day
-
-parse_single_item :: Value -> Parser Issue
-parse_single_item = withObject "single_item" $ \item -> do
-    number <- item .: "number"
-    user <- item .: "user"
-    i_author <- user .: "login"
-    return Issue {..}
-
-parse_items :: Value -> Parser [Issue]
-parse_items = withObject "array of items" $ \o -> do
-    items <- o .: "items"
-    mapM parse_single_item items
-
-parseIssues value = parseMaybe parse_items value
+-- User Imports
+import Types
+import Parser
 
 setCredentials u p = basicAuth u p
 
@@ -70,16 +36,14 @@ getIssues repo (Range from to) auth =
         repo_id = r_id repo
         date_from = showGregorian from
         date_to = showGregorian to
-        q_repo = pack $ "is:pr repo:" ++ repo_owner ++ "/" ++ repo_id ++ " -review:none created:" ++ date_from ++ ".." ++ date_to
+        q_repo = DText.pack $ "is:pr repo:" ++ repo_owner ++ "/" ++ repo_id ++ " -review:none created:" ++ date_from ++ ".." ++ date_to
         q_parms = "q"       =: ( q_repo :: Text) <>
                 "sort"      =: ("created" :: Text) <>
                 "direction" =: ("asc" :: Text)
-    r <- req GET                                            -- method
+    resp <- req GET                                          -- method
         (https "api.github.com" /: "search" /: "issues")    -- safe by construction URL
         NoReqBody                                           -- use built-in options or add your own
         jsonResponse                                        -- specify how to interpret response
         (q_parms <> headers <> auth)                        -- query params, headers, explicit port number, etc.
-    return $ parseIssues (responseBody r :: Value)
-
--- getPRs :: Maybe [Issue] -> IO ()
--- getPRs m = print m
+    let (Just some_header) = responseHeader resp "Link"
+    return $ (parseHeader (BS.unpack some_header), parseIssues (responseBody resp :: Value))

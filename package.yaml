@@ -1,6 +1,6 @@
 name:                devteam-eq
 version:             0.1.0.0
-#github:              "githubuser/devteam-eq"
+github:              "lbassani12/devteam-eq"
 license:             BSD3
 author:              "Lucio Bassani"
 maintainer:          "luciobassani12@gmail.com"
@@ -28,6 +28,8 @@ dependencies:
 - mtl
 - unordered-containers
 - time
+- HTTP
+- parsec
 
 library:
   source-dirs: src
