@@ -23,6 +23,8 @@ data Issue = Issue { i_author :: Developer
                         , number :: Int
 } deriving(Show, Generic)
 
+type Issues = [Issue]
+
 data PullRequest = PR { author :: Developer
                         , reviewers :: [Developer]
                         } deriving (Eq, Show)

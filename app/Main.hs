@@ -13,4 +13,4 @@ main = do
         repo = setRepo "Microsoft" "TypeScript"
         date_range = setDate (fromGregorian 2019 05 01) (fromGregorian 2019 10 01)
     res <- getIssues repo date_range credentials
-    print res
+    print (res, length res)
