@@ -13,19 +13,30 @@ import Text.Parsec.String
 import Types
 
 -- Parsers for JSON Responses
-parse_single_item :: Value -> Aeson.Parser Issue
-parse_single_item = withObject "single_item" $ \item -> do
+parseSingleItem :: Value -> Aeson.Parser Issue
+parseSingleItem = withObject "single_item" $ \item -> do
     number <- item .: "number"
     user <- item .: "user"
     i_author <- user .: "login"
     return Issue {..}
 
-parse_items :: Value -> Aeson.Parser Issues
-parse_items = withObject "array of items" $ \o -> do
+parseItems :: Value -> Aeson.Parser Issues
+parseItems = withObject "array of items" $ \o -> do
     items <- o .: "items"
-    mapM parse_single_item items
+    mapM parseSingleItem items
 
-parseIssues value = Aeson.parseMaybe parse_items value
+parseSingleReviewer :: Value -> Aeson.Parser String
+parseSingleReviewer = withObject "reviewer" $ \o -> do
+    reviewer <- o .: "login"
+    return reviewer
+
+parseReqReviewers :: Value -> Aeson.Parser [String]
+parseReqReviewers = withObject "array of reviewers" $ \o -> do
+    reviews <- o .: "requested_reviewers"
+    mapM parseSingleReviewer reviews
+
+parseReviewers value = Aeson.parseMaybe parseReqReviewers value
+parseIssues value = Aeson.parseEither parseItems value
 
 -- Parsers for Header Responses
 parsePage :: String -> Parser (String, String)
@@ -54,7 +65,7 @@ parseNextAndLastPage = do
         return (page2, page3)
     else return (page1, page2)
 
-myparse :: Parser a -> String -> Either ParseError a
-myparse rule text = parse rule "Error in" text
+myParse :: Parser a -> String -> Either ParseError a
+myParse rule text = parse rule "Error in" text
 
-parseHeader header = myparse parseNextAndLastPage header
+parseHeader header = myParse parseNextAndLastPage header

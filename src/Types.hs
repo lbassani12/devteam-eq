@@ -20,14 +20,14 @@ type DevAff = Map.HashMap Developer Affinity
 type TeamAff = Map.HashMap Developer DevAff
 
 data Issue = Issue { i_author :: Developer
-                        , number :: Int
+                   , number :: Int
 } deriving(Show, Generic)
 
 type Issues = [Issue]
 
 data PullRequest = PR { author :: Developer
-                        , reviewers :: [Developer]
-                        } deriving (Eq, Show)
+                      , reviewers :: [Developer]
+                      } deriving (Eq, Show)
 
 data Repository = Repo { r_owner :: RepoOwner
                         , r_id :: RepoId
