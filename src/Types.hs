@@ -6,6 +6,8 @@ module Types where
 import qualified Data.HashMap.Strict as Map
 import Data.Time.Calendar
 import GHC.Generics
+import Control.Exception
+import Text.Parsec (ParseError)
 
 
 type Developer = String
@@ -14,6 +16,14 @@ type RepoOwner = String
 type RepoId = String
 type User = String
 type Password = String
+
+data GitException
+    = NoLinkHeader
+    | ParseHeaderError ParseError
+    | ParseIssuesError String
+    deriving (Show)
+
+instance Exception GitException
 
 type DevAff = Map.HashMap Developer Affinity
 

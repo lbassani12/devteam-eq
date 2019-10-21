@@ -13,6 +13,7 @@ import System.IO.Error
 import Data.Time.Calendar
 import Data.ByteString.Char8 as BS
 import Debug.Trace
+import Control.Exception
 
 -- User Imports
 import Types
@@ -49,18 +50,25 @@ getIssues' repo (Range from to) auth (page, last_page) = do
                 NoReqBody
                 jsonResponse
                 (q_parms <> headers <> auth)
-            let (Just some_header) = responseHeader resp "Link"
-                (issues, err) = case parseIssues (responseBody resp :: Value) of
-                    Right i -> (i, "todo bien")
-                    Left err -> ([], err)
-                -- (Just issues) = parseIssues (responseBody resp :: Value)
+            let (link_header, issues) =
+                        (
+                        case responseHeader resp "Link" of
+                            Just h -> h
+                            Nothing -> throw NoLinkHeader
+                        ,
+                        case parseIssues (responseBody resp :: Value) of
+                            Right i -> i
+                            Left err -> throw (ParseIssuesError err)
+                        )
             -- trace (show (issues, err)) (return ())
             if page == last_page
             then return issues
             else do
-                let (Right (next_page, q_last)) = parseHeader $ BS.unpack some_header
-                asd <- liftIO $ getIssues' repo (Range from to) auth (next_page, q_last)
-                return $ issues ++ asd
+                let (next_page, q_last) = case parseHeader $ BS.unpack link_header of
+                        Right (n, l) -> (n, l)
+                        Left err -> throw (ParseHeaderError err)
+                iss <- liftIO $ getIssues' repo (Range from to) auth (next_page, q_last)
+                return $ issues ++ iss
     return a
 
 getPullRequest issue repo auth = do
