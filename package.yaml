@@ -31,6 +31,7 @@ dependencies:
 - HTTP
 - parsec
 - utility-ht
+- extra
 
 library:
   source-dirs: src
