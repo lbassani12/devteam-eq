@@ -3,7 +3,7 @@
 module Types where
 
 -- LTS Imports
-import qualified Data.HashMap.Strict as Map
+import qualified Data.HashMap as Map
 import Data.Time.Calendar
 import GHC.Generics
 import Control.Exception
@@ -18,9 +18,9 @@ type User = String
 type Password = String
 
 data GitException
-    = NoLinkHeader
-    | ParseHeaderError ParseError
+    = ParseHeaderError ParseError
     | ParseIssuesError String
+    | ParseRevError String
     deriving (Show)
 
 instance Exception GitException
@@ -38,6 +38,8 @@ type Issues = [Issue]
 data PullRequest = PR { author :: Developer
                       , reviewers :: [Developer]
                       } deriving (Eq, Show)
+
+type RepoInteractions = [PullRequest]
 
 data Repository = Repo { r_owner :: RepoOwner
                         , r_id :: RepoId

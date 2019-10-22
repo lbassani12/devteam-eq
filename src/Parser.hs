@@ -35,7 +35,7 @@ parseReqReviewers = withObject "array of reviewers" $ \o -> do
     reviews <- o .: "requested_reviewers"
     mapM parseSingleReviewer reviews
 
-parseReviewers value = Aeson.parseMaybe parseReqReviewers value
+parseReviewers value = Aeson.parseEither parseReqReviewers value
 parseIssues value = Aeson.parseEither parseItems value
 
 -- Parsers for Header Responses

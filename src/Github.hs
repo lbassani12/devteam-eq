@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 
 module Github where
 
@@ -50,39 +51,41 @@ getIssues' repo (Range from to) auth (page, last_page) = do
                 NoReqBody
                 jsonResponse
                 (q_parms <> headers <> auth)
-            let (link_header, issues) =
+            let ((next_page, q_last_page), issues) =
                         (
                         case responseHeader resp "Link" of
-                            Just h -> h
-                            Nothing -> throw NoLinkHeader
+                            Just h -> if page == last_page
+                                      then (last_page, last_page)
+                                      else case parseHeader $ BS.unpack h of
+                                            Right (n, l) -> (n, l)
+                                            Left err -> ("1", "1")
+                            Nothing -> ("1", "1")
                         ,
                         case parseIssues (responseBody resp :: Value) of
                             Right i -> i
                             Left err -> throw (ParseIssuesError err)
                         )
-            -- trace (show (issues, err)) (return ())
-            if page == last_page
+            if page == q_last_page
             then return issues
             else do
-                let (next_page, q_last) = case parseHeader $ BS.unpack link_header of
-                        Right (n, l) -> (n, l)
-                        Left err -> throw (ParseHeaderError err)
-                iss <- liftIO $ getIssues' repo (Range from to) auth (next_page, q_last)
+                iss <- liftIO $ getIssues' repo (Range from to) auth (next_page, q_last_page)
                 return $ issues ++ iss
     return a
 
-getPullRequest issue repo auth = do
+getPullRequest repo auth issue = do
     a <- runReq defaultHttpConfig $ do
         let headers = header "User-Agent" "lbassani12"
             author = i_author issue
-            pullreq = DText.pack $ show (number issue)
+            pull_req = DText.pack $ show (number issue)
             repo_owner = DText.pack $ r_owner repo
             repo_id = DText.pack $ r_id repo
         resp <- req GET
-            (https "api.github.com" /: "repos" /: repo_owner /: repo_id /: "pulls" /: pullreq)
+            (https "api.github.com" /: "repos" /: repo_owner /: repo_id /: "pulls" /: pull_req)
             NoReqBody
             jsonResponse
             (headers <> auth)
-        let (Just reviews) = parseReviewers (responseBody resp :: Value)
-        return reviews
+        let reviewers = case parseReviewers (responseBody resp :: Value) of
+                Right r -> r
+                Left err -> throw (ParseRevError err)
+        return PR {..}
     return a
