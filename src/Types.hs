@@ -3,7 +3,7 @@
 module Types where
 
 -- LTS Imports
-import qualified Data.HashMap as Map
+import qualified Data.Map as Map
 import Data.Time.Calendar
 import GHC.Generics
 import Control.Exception
