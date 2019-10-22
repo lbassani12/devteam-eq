@@ -26,7 +26,7 @@ dependencies:
 - bytestring
 - text
 - mtl
-- unordered-containers
+- hashmap
 - time
 - HTTP
 - parsec

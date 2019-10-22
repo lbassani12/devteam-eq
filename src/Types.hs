@@ -25,9 +25,9 @@ data GitException
 
 instance Exception GitException
 
-type DevAff = Map.HashMap Developer Affinity
+type DevAff = Map.Map Developer Affinity
 
-type TeamAff = Map.HashMap Developer DevAff
+type TeamAff = Map.Map Developer DevAff
 
 data Issue = Issue { i_author :: Developer
                    , number :: Int
