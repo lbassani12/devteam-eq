@@ -30,6 +30,7 @@ dependencies:
 - time
 - HTTP
 - parsec
+- utility-ht
 
 library:
   source-dirs: src

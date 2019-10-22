@@ -43,7 +43,6 @@ type RepoInteractions = [PullRequest]
 
 data Repository = Repo { r_owner :: RepoOwner
                         , r_id :: RepoId
-                        , pullRequests :: [PullRequest]
                         } deriving (Eq, Show)
 
 data DateRange = Range Day Day

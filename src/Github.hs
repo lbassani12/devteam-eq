@@ -15,6 +15,7 @@ import Data.Time.Calendar
 import Data.ByteString.Char8 as BS
 import Debug.Trace
 import Control.Exception
+import Control.Monad.HT as HT
 
 -- User Imports
 import Types
@@ -28,7 +29,6 @@ setDate from to = Range from to
 setRepo :: RepoOwner -> RepoId -> Repository
 setRepo r_owner r_id = Repo { r_owner = r_owner
                             , r_id = r_id
-                            , pullRequests = []
                             }
 
 getIssues repo range auth = getIssues' repo range auth ("1", "0")
@@ -89,3 +89,8 @@ getPullRequest repo auth issue = do
                 Left err -> throw (ParseRevError err)
         return PR {..}
     return a
+
+getRepoInteractions repo range auth = do
+    issues <- getIssues repo range auth
+    prs <- HT.map (getPullRequest repo auth) issues
+    return prs
