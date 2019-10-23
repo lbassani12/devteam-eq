@@ -174,3 +174,16 @@ eq = getTeamEquity maps
 
 And that's pretty much it.
 
+
+## Bibliography
+
+<https://docs.haskellstack.org/en/stable/README/>
+<http://hackage.haskell.org/package/req>
+<https://artyom.me/aeson>
+<https://tech.fpcomplete.com/haskell/library/containers>
+<https://help.github.com/en/github/searching-for-information-on-github/searching-issues-and-pull-requests>
+<https://developer.github.com/v3/search/#search-issues-and-pull-requests>
+<https://developer.github.com/v3/pulls/#list-pull-requests>
+<https://developer.github.com/v3/#pagination>
+<https://developer.github.com/v3/guides/traversing-with-pagination/>
+<http://jakewheat.github.io/intro_to_parsing/>
