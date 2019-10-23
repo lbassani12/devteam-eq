@@ -11,9 +11,6 @@ module TeamEquity.Github (
     -- Repo Interactions
     getRepoInteractions,
 
-    -- Modules
-    module TeamEquity.Types
-
 )where
 
 -- LTS Imports
