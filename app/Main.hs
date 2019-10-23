@@ -6,8 +6,7 @@ module Main where
 import Data.Time.Calendar
 
 -- User Imports
-import TeamAffinity
-import Github
+import TeamEquity
 
 main :: IO ()
 main = do

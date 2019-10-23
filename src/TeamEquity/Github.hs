@@ -1,7 +1,20 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Github where
+module TeamEquity.Github (
+
+    -- Preparation functions
+    setCredentials,
+    setDate,
+    setRepo,
+
+    -- Repo Interactions
+    getRepoInteractions,
+
+    -- Modules
+    module TeamEquity.Types
+
+)where
 
 -- LTS Imports
 import Control.Monad.IO.Class
@@ -18,8 +31,8 @@ import Control.Exception
 import Control.Monad.HT as HT
 
 -- User Imports
-import Types
-import Parser
+import TeamEquity.Types
+import TeamEquity.Parser
 
 setCredentials u p = basicAuth u p
 

@@ -1,7 +1,16 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Parser where
+module TeamEquity.Parser (
+
+    -- JSON Parsers
+    parseReviewers,
+    parseIssues,
+
+    -- Header Parsers
+    parseHeader
+
+)where
 
 -- LTS Imports
 import Data.Aeson
@@ -10,7 +19,7 @@ import Text.Parsec
 import Text.Parsec.String
 
 -- User Imports
-import Types
+import TeamEquity.Types
 
 -- Parsers for JSON Responses
 parseSingleItem :: Value -> Aeson.Parser Issue

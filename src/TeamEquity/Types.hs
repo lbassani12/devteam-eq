@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Types where
+module TeamEquity.Types where
 
 -- LTS Imports
 import qualified Data.Map as Map

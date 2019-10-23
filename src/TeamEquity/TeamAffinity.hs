@@ -1,4 +1,13 @@
-module TeamAffinity where
+module TeamEquity.TeamAffinity (
+
+        -- Affinity and Equity
+        generateTeamAffMap,
+        getPairAff,
+        getTeamEquity,
+
+        -- Pretty Printer
+        teamAffMapPP,
+)where
 
 -- LTS Imports
 import qualified Data.Map as Map
@@ -6,7 +15,7 @@ import qualified Data.Map.Internal.Debug as DMap
 import Numeric.Extra
 
 -- User Imports
-import Types
+import TeamEquity.Types
 
 innerMap :: [Developer] -> DevAff
 innerMap = Map.fromListWith (\new_aff old_aff -> new_aff + old_aff) . Prelude.map (\dev -> (dev, 1))
