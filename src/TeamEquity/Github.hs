@@ -37,9 +37,7 @@ setDate :: Day -> Day -> DateRange
 setDate from to = Range from to
 
 setRepo :: RepoOwner -> RepoId -> Repository
-setRepo r_owner r_id = Repo { r_owner = r_owner
-                            , r_id = r_id
-                            }
+setRepo r_owner r_id = Repo {..}
 
 getIssues repo range auth = getIssues' repo range auth ("1", "0")
 
